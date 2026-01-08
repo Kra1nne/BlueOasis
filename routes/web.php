@@ -23,6 +23,7 @@ use App\Http\Controllers\authentications\ForgotPasswordBasic;
 use App\Http\Controllers\report\ReportControllers;
 use App\Http\Controllers\evaluation\EvaluationControllers;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\email\EmailsController;
 
 Route::get('/', [LandingPageController::class, 'index'])->name('home');
 Route::get('/pricing', [PricingController::class, 'index'])->name('pricing');
@@ -121,8 +122,6 @@ Route::middleware(['auth', 'role:Admin,Employee', 'throttle:web'])->group(functi
   });
 
   Route::get('/pages/account-settings-account', [AccountSettingsAccount::class, 'index'])->name('pages-account-settings-account');
-  Route::get('/pages/account-settings-notifications', [AccountSettingsNotifications::class, 'index'])->name('pages-account-settings-notifications');
-  Route::get('/pages/account-settings-connections', [AccountSettingsConnections::class, 'index'])->name('pages-account-settings-connections');
 });
 
 Route::get('/logout', [LoginBasic::class, 'logoutAccount'])->name('logout-process')->middleware(['throttle:web']);
@@ -133,3 +132,5 @@ Route::post('/evaluation/question/add', [EvaluationControllers::class, 'store'])
 Route::get('/pages/misc-error', [MiscError::class, 'index'])->name('pages-misc-error');
 Route::get('/pages/misc-under-maintenance', [MiscUnderMaintenance::class, 'index'])->name('pages-misc-under-maintenance');
 Route::get('/pages/misc-too-many-request', [MiscTooManyRequest::class, 'index'])->name('pages-misc-too-many-request');
+
+Route::post('/email/success', [EmailsController::class, 'successEmail'])->name('email.success');

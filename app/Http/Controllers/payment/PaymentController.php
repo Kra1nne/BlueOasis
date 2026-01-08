@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers\payment;
 
+use App\Models\Log;
 use App\Models\Food;
 use App\Models\Booking;
 use App\Models\Payment;
+use App\Models\Facility;
 use App\Models\FoodBooking;
 use Illuminate\Http\Request;
-use Luigel\Paymongo\Paymongo;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
-use App\Models\Facility;
-use App\Models\Log;
 
 class PaymentController extends Controller
 {
@@ -289,7 +288,6 @@ class PaymentController extends Controller
         session()->forget('payment_data');
         return redirect()->route('booking')->with('show_modal', true)->with('booking_id', Crypt::encryptString($bookingID->id));
     }
-
     public function paymentFailed(Request $request)
     {
         return view('payment.failed');

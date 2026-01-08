@@ -152,6 +152,23 @@
         };
     </script>
 @endif
+@if(session('show_modal'))
+    <script>
+        window.onload = function () {
+            fetch("{{ route('email.success') }}", {
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    booking_id: "{{ session('booking_id') }}"
+                })
+            });
+        };
+    </script>
+@endif
+
 
 <style>
   /* Fade-in and scale-up effect for dynamically added facilities */
