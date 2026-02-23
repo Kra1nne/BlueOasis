@@ -277,12 +277,14 @@ $(document).ready(function() {
       event.preventDefault();
       return;
     }
-
+    var formData = new FormData($('#ratingData')[0]);
     $.ajax({
       type: 'POST',
       url: '/reservations-list/rating',
       cache: false,
-      data: $('#ratingData').serialize(),
+      contentType: false,
+      processData: false,
+      data: formData,
       dataType: 'json',
       beforeSend: function () {
         $('#AddRating').modal('hide');

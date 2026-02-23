@@ -25,6 +25,8 @@ class Facility extends Model
     'users_id',
     'max_person',
     'additional_price',
+    'additional_price_time',
+    'limit_add'
   ];
   public function picture()
   {

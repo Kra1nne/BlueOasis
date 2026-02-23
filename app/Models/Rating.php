@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Facility;
+use App\Models\RatingImages;
 use Illuminate\Database\Eloquent\Model;
 
 class Rating extends Model
@@ -19,5 +21,9 @@ class Rating extends Model
     public function rating()
     {
         return $this->belongsTo(Facility::class, 'facilities_id');
+    }
+    public function images()
+    {
+        return $this->hasMany(RatingImages::class, 'rating_id');
     }
 }

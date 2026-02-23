@@ -20,7 +20,6 @@ class FacilitiesController extends Controller
   public function index(Request $request) {
     $venues = Facility::with('picture')
         ->whereNull('deleted_at');
-
     $isFiltering = false; // <–– default
 
         $startDate = $request->input('checkin');
@@ -74,7 +73,9 @@ class FacilitiesController extends Controller
         'users_id' => Auth::id(),
         'max_person' => $request->max_person,
         'additional_price' => $request->additional_price,
-        'amenities' => $request->amenities
+        'amenities' => $request->amenities,
+        'additional_price_time' => $request->addprice_perhour,
+        'limit_add' => $request->limit_add,
     ]);
 
     if ($request->hasFile('imagesData')) {
@@ -156,7 +157,9 @@ class FacilitiesController extends Controller
         'updated_at' => now(),
         'max_person' => $request->max_person,
         'additional_price' => $request->additional_price,
-        'amenities' => $request->amenities
+        'amenities' => $request->amenities,
+        'additional_price_time' => $request->addprice_perhour,
+        'limit_add' => $request->limit_add,
     ];
 
     if ($request->hasFile('imagesData')) {
@@ -182,7 +185,7 @@ class FacilitiesController extends Controller
         ->where('id', $decryptedId)
         ->whereNull('deleted_at')
         ->first();
-
+      
       $ratings = Rating::leftjoin('bookings', 'bookings.id', '=', 'rating.bookings_id')
         ->leftjoin('facilities', 'facilities.id', '=', 'rating.facilities_id')
         ->leftjoin('users', 'users.id', '=', 'bookings.users_id')
@@ -191,7 +194,6 @@ class FacilitiesController extends Controller
         ->select('*','rating.created_at as CommentDate')
         ->orderBy('bookings.created_at', 'Desc')
         ->get();
-
       $bookingDetails = Booking::with('facility')
         ->where('bookings.status', '!=', 'cancel')
         ->whereHas('facility', function ($query) use ($decryptedId) {

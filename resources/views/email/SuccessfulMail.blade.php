@@ -100,7 +100,7 @@
 
         <div class="card-footer">
             <a 
-                href="http://127.0.0.1:8000/reservations-list" 
+                href="https://bormis.cs2025.ccsit.info/reservations-list" 
                 class="btn btn-oasis"
             >
                 View Reservation

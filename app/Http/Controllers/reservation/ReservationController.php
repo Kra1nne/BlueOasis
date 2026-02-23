@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers\reservation;
 
+use DateTime;
+use App\Models\Log;
+use App\Models\Food;
+use App\Models\Rating;
 use App\Models\Booking;
+use App\Models\Payment;
+use App\Models\Facility;
+use App\Models\FoodBooking;
+use App\Models\RatingImages;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
-use App\Models\Log;
-use App\Models\Rating;
-use App\Models\Facility;
-use App\Models\Payment;
-use App\Models\Food;
-use App\Models\FoodBooking;
-use DateTime;
+use Illuminate\Support\Facades\Storage;
 
 class ReservationController extends Controller
 {
@@ -85,7 +87,7 @@ class ReservationController extends Controller
       
       return view('content.reservation.user_reservation-list', compact('reservations'));
     }
-    public function rating(Request $request){
+    public function rating(Request $request){      
       $data = [
         'rating' => $request->rating,
         'comments' => $request->description,
@@ -93,7 +95,19 @@ class ReservationController extends Controller
         'facilities_id' => $request->facilities_id,
         'created_at' => now()
       ];
-      $rating = Rating::insert($data);
+      $rating = Rating::create($data);
+
+      if ($request->hasFile('imagesData')) {
+        foreach ($request->file('imagesData') as $image) {
+            $path = $image->store('public/uploads');
+              RatingImages::insert([
+            'path' => Storage::url($path),
+            'rating_id' => $rating->id,
+            'uploaded_at' => now(),
+        ]);
+          }
+      }
+
       $logData = [
         'user_id' => Auth::id(),
         'action' => 'Add',

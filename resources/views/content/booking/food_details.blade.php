@@ -119,7 +119,9 @@
                 <strong  class="text-primary fw-bold">Total Amount: </strong><span id="total-amount" class="text-primary fw-bold">₱{{ number_format($bookingDetails['total_amount'], 2) }}</span>
               </li>
             </ul>
-            
+            <div class="mt-4 px-2">
+              <p class="text-muted">Note: Please be advised that the payment for your reservation is non-refundable, even in the event of cancellation. By confirming your booking, you acknowledge and agree to this policy.</p>
+            </div>
             <form class="mt-3 d-flex justify-content-end" method="POST" action="{{ route('paymongo.checkout') }}">
               @csrf
               <input type="hidden" name="facility_income" id="facility_income">
@@ -132,6 +134,7 @@
               <input type="hidden" name="check_in" id="check_in" value="{{ $bookingDetails['checkin'] }}">
               <input type="hidden" name="check_out" id="check_out" value="{{ $bookingDetails['checkout'] }}">
               <input type="hidden" name="guest_count" id="guest_count" value="{{ $bookingDetails['number_of_guests'] }}">
+              
               <div class="d-flex gap-3">
                   <button type="submit" name="payment_type" value="partial" class="btn btn-success">
                       Partial Payment
@@ -141,9 +144,6 @@
                   </button>
               </div>
             </form>
-            <div class="mt-4">
-              <p class="text-muted">Note: Please be advised that the payment for your reservation is non-refundable, even in the event of cancellation. By confirming your booking, you acknowledge and agree to this policy.</p>
-            </div>
           </div>
         </div>
       </div>

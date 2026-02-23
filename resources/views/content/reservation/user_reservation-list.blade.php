@@ -159,7 +159,14 @@
               <input type="hidden" name="rating" id="ratingInput" value="0">
               <input type="hidden" name="bookings_id" id="bookings_id">
               <input type="hidden" name="facilities_id" id="facilities_id">
-
+            </div>
+          </div>
+          <div class="row mb-5">
+            <div class="col">
+              <label for="Upload">Upload Images (Optional)</label>
+              <div class="form-floating form-floating-outline mb-2">
+                <input type="file"  name="imagesData[]" multiple accept="image/*" class="form-control" id="DataImages">
+              </div>
             </div>
           </div>
           <div class="row">

@@ -55,15 +55,16 @@ class BookingController extends Controller
         ->whereNull('deleted_at')
         ->first();
 
-      $ratings = Rating::leftjoin('bookings', 'bookings.id', '=', 'rating.bookings_id')
+      $ratings = Rating::with('images')
+        ->leftjoin('bookings', 'bookings.id', '=', 'rating.bookings_id')
         ->leftjoin('facilities', 'facilities.id', '=', 'rating.facilities_id')
         ->leftjoin('users', 'users.id', '=', 'bookings.users_id')
         ->leftjoin('person', 'person.id', '=', 'users.person_id')
         ->where('facilities.id', $decryptedId)
-        ->select('*','rating.created_at as CommentDate')
+        ->select('rating.*','rating.created_at as CommentDate','person.firstname','person.middlename','person.lastname','users.email')
         ->orderBy('bookings.created_at', 'Desc')
         ->get();
-
+      
       $bookingDetails = Booking::with('facility')
         ->where('bookings.status', '!=', 'cancel')
         ->whereHas('facility', function ($query) use ($decryptedId) {

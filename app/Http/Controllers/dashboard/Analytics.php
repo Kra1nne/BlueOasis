@@ -36,8 +36,19 @@ class Analytics extends Controller
 
       $foodCount = Food::whereNull('deleted_at')->count();
       $facilitycount = Facility::whereNull('deleted_at')->count();
+      
       $ratingavg = Rating::whereNull('deleted_at')->avg('rating');
       $customerSatisfaction = $ratingavg ? round(($ratingavg / 5) * 100, 1) : 0;
+
+      $ratingCounts = Rating::whereNull('deleted_at')
+            ->selectRaw('rating, COUNT(*) as count')
+            ->groupBy('rating')
+            ->orderBy('rating', 'desc')
+            ->pluck('count', 'rating')
+            ->toArray();
+      
+      // Ensure all rating values (1-5) exist in the array
+      $ratingCounts = array_replace([5 => 0, 4 => 0, 3 => 0, 2 => 0, 1 => 0], $ratingCounts);
 
       $amountReservation = Payment::orderBy('created_at', 'desc')->get();
 
@@ -145,12 +156,11 @@ class Analytics extends Controller
         foreach ($months as $month) {
             $monthlyRevenue[] = Booking::sum(DB::raw("CASE WHEN MONTH(created_at) = $month THEN facility_income ELSE 0 END"));
         }
-        $monthFacility = $request->input('monthFacilities');
+        $monthFacility = $request->input('monthFacilities', now()->format('Y-m'));
 
         $facilitiesData = Facility::leftJoin('bookings', function($join) use ($monthFacility) {
                             $join->on('bookings.facilities_id', '=', 'facilities.id');
                             if ($monthFacility) {
-                                // Apply month filter inside LEFT JOIN
                                 $join->whereRaw("DATE_FORMAT(bookings.created_at, '%Y-%m') = ?", [$monthFacility]);
                             }
                         })
@@ -158,11 +168,11 @@ class Analytics extends Controller
                         ->groupBy('facilities.id', 'facilities.name')
                         ->select(
                             'facilities.name',
-                            DB::raw('COALESCE(SUM(bookings.amount), 0) as total')
+                            DB::raw('COALESCE(count(bookings.id), 0) as total')
                         )
                         ->get();
 
-        $monthFood = $request->input('month');
+        $monthFood = $request->input('month', now()->format('Y-m'));
 
         $foodData = Food::leftJoin('food_bookings', function($join) use ($monthFood) {
             $join->on('food_bookings.foods_id', '=', 'foods.id');
@@ -216,6 +226,27 @@ class Analytics extends Controller
                         )
                         ->orderBy('total', 'desc')
                         ->first();
+
+        $CountOfBookings = Booking::leftjoin('facilities', 'bookings.facilities_id', '=', 'facilities.id')
+                            ->groupBy('facilities.id', 'facilities.name')
+                            ->select(
+                                'facilities.name',
+                                DB::raw('COUNT(bookings.id) as total_bookings'),
+                                DB::raw('SUM(bookings.amount) as total_sales')
+                            )
+                            ->whereNull('facilities.deleted_at')
+                            ->orderBy('total_sales', 'desc')
+                            ->get();
+        $CountOfFoodBookings = Food::leftjoin('food_bookings', 'food_bookings.foods_id', '=', 'foods.id')
+                            ->groupBy('foods.id', 'foods.name')
+                            ->select(
+                                'foods.name',
+                                DB::raw('COUNT(food_bookings.id) as total_orders'),
+                                DB::raw('SUM(foods.price * food_bookings.quantity) as total_sales')
+                            )
+                            ->whereNull('foods.deleted_at')
+                            ->orderBy('total_sales', 'desc')
+                            ->get();                    
                             
       return view('content.dashboard.dashboards-analytics', compact(
           'reservations',
@@ -243,7 +274,10 @@ class Analytics extends Controller
           'monthFood',
           'monthFacility',
           'availableYearsBooking',
-          'year'
+          'year',
+          'ratingCounts',
+          'CountOfBookings',
+          'CountOfFoodBookings',
       ));
   }
 

@@ -43,9 +43,10 @@ $(document).ready(function () {
       { id: 'price', label: 'Price' },
       { id: 'category', label: 'Category' },
       { id: 'description', label: 'Description' },
-      { id: 'max_person', label: 'Maximum Person' },
-      { id: 'additional_price', label: 'Additional Price' },
-      { id: 'amenities', label: 'Amenities' }
+      { id: 'max_person', label: 'Number of Pax' },
+      { id: 'additional_price', label: 'Additional Price (person)' },
+      { id: 'addprice_perhour', label: 'Additional Price (hour)' },
+      { id: 'limit_add', label: 'Additional Person' }
     ];
 
     const isValid = validateForm(fields);
@@ -133,7 +134,9 @@ $(document).ready(function () {
     const max = $(this).data('max');
     const additional = $(this).data('additional');
     const amenities = $(this).data('amenities');
-
+    const limit_add = $(this).data('limit_add');
+    const additional_price_time = $(this).data('additional_price_time');
+    console.log(limit_add);
     const imageArray = images.split(',');
 
     $('#Edit_id').val(id);
@@ -144,6 +147,8 @@ $(document).ready(function () {
     $('#Edit_maxPerson').val(max);
     $('#Edit_additionalPrice').val(additional);
     $('#Edit_amenities').val(amenities);
+    $('#Edit_addprice_perhour').val(additional_price_time);
+    $('#Edit_limit_add').val(limit_add);
 
     $('#Edit_ImagePreview').empty();
 
@@ -172,8 +177,10 @@ $(document).ready(function () {
       { id: 'Edit_price', label: 'Price' },
       { id: 'Edit_category', label: 'Category' },
       { id: 'Edit_description', label: 'Description' },
-      { id: 'Edit_maxPerson', label: 'Maximum Person' },
-      { id: 'Edit_additionalPrice', label: 'Additional Price' }
+      { id: 'Edit_maxPerson', label: 'Number of Pax' },
+      { id: 'Edit_additionalPrice', label: 'Additional Price (person)' },
+      { id: 'Edit_addprice_perhour', label: 'Additional Price (hour)' },
+      { id: 'Edit_limit_add', label: 'Additional Person' }
     ];
 
     const isValid = validateForm(fields);
@@ -346,6 +353,8 @@ $(document).ready(function () {
                         data-id="${venue.encrypted_id}" data-name="${venue.name}" data-price="${venue.price}"
                         data-category="${venue.category}" data-description="${venue.description}"
                         data-amenities="${venue.amenities}"
+                        data-additional_price_time="${venue.additional_price_time}"
+                        data-limit_add="${venue.limit_add}"
                         data-images="${venue.picture.map(pic => pic.path).join(',')}" data-code="${venue.picture[0]?.v_code}">
                         <i class="ri-pencil-line me-1"></i> Edit
                       </a>

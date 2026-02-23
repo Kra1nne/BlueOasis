@@ -102,34 +102,55 @@
   }
 })();
   // ==========================
-  // Customer Satisfaction Gauge
+  // Customer Satisfaction (Rating Counts)
   // ==========================
   const satisfactionEl = document.querySelector('#customerSatisfactionGauge');
   if (satisfactionEl) {
-    const satisfactionScore = JSON.parse(document.getElementById('satisfaction-score').textContent);
-    const gaugeOptions = {
+    const ratingCounts = JSON.parse(document.getElementById('rating-counts-data').textContent);
+    
+    // Prepare data for the chart (5 stars down to 1 star)
+    const categories = ['5 Stars', '4 Stars', '3 Stars', '2 Stars', '1 Star'];
+    const values = [
+      ratingCounts[5] || 0,
+      ratingCounts[4] || 0,
+      ratingCounts[3] || 0,
+      ratingCounts[2] || 0,
+      ratingCounts[1] || 0
+    ];
+    
+    const ratingChartOptions = {
       chart: {
-        type: 'radialBar',
+        type: 'bar',
         height: 300,
-        sparkline: { enabled: true }
+        toolbar: { show: false }
       },
-      series: [satisfactionScore],
-      labels: ['Satisfaction'],
+      series: [{
+        name: 'Number of Ratings',
+        data: values
+      }],
+      xaxis: { categories },
+      colors: ['#FFB400'],
       plotOptions: {
-        radialBar: {
-          hollow: { size: '65%' },
-          dataLabels: {
-            name: { show: true },
-            value: {
-              formatter: val => `${val}%`,
-              fontSize: '24px'
-            }
-          }
+        bar: {
+          horizontal: true,
+          columnWidth: '50%',
+          borderRadius: 6
         }
       },
-      colors: ['#FFB400']
+      dataLabels: {
+        enabled: true,
+        formatter: val => val.toString(),
+        style: { fontSize: '13px', colors: ['#333'] }
+      },
+      tooltip: {
+        y: { formatter: val => `${val} ratings` }
+      },
+      grid: {
+        borderColor: '#e7e7e7'
+      }
     };
-    new ApexCharts(satisfactionEl, gaugeOptions).render();
+    
+    new ApexCharts(satisfactionEl, ratingChartOptions).render();
   }
 
   // ==========================
@@ -195,7 +216,7 @@ if (categoryEl) {
           },
           dataLabels: {
               enabled: true,
-              formatter: val => `₱${val.toLocaleString()}`,
+              formatter: val => `${val.toLocaleString()}`,
               style: { fontSize: '13px', colors: ['#333'] }
           },
           tooltip: {

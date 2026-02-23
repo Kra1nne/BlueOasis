@@ -119,7 +119,7 @@
                             </div>
                           </div>
                           <div class="col mb-4">
-                            <button type="button" class="badge bg-label-primary border border-white cottage-btn">5:00 AM - 5:00 PM</button>
+                            <button type="button" class="badge bg-label-primary border border-white cottage-btn">8:00 AM - 5:00 PM</button>
                             <button type="button" class="badge bg-label-gray border border-white cottage-btn">5:00 PM - 10:00 PM</button>
                             <button type="button" class="badge bg-label-gray border border-white cottage-btn">5:00 AM - 10:00 PM</button>
                           </div>
@@ -140,6 +140,9 @@
                   </div>
                   </div>
                 </div>
+                <div class="mt-4 px-2">
+                  <p class="text-muted">Note: Please be advised that the payment for your reservation is non-refundable, even in the event of cancellation. By confirming your booking, you acknowledge and agree to this policy.</p>
+                </div>
                 <button
                     class="btn btn-primary w-100"
                     @if(Auth::check())
@@ -158,7 +161,7 @@
           <h3 class="fw-bold text-start">Comments</h3>
           <div class="mb-4">
             @forelse ($ratings as $item)
-              <div class="flex mb-4 align-content-start mt-2">
+              <div class="flex mb-2 align-content-start mt-2">
               <div class="d-flex align-items-center mb-4 mt-2">
                 <img src="{{ asset('assets/img/profile/profile.png') }}" alt class="w-px-40 h-auto rounded-circle">
 
@@ -176,6 +179,13 @@
                 </div>
               </div>
             </div>
+            @if($item->images && $item->images->count() > 0)
+              <div class="d-flex flex-wrap gap-2 mb-4">
+                @foreach($item->images as $image)
+                  <img src="{{ $image->path }}" alt="Rating Image" class="img-thumbnail rating-image" style="width: 100px; height: 100px; object-fit: cover; cursor: pointer;" loading="lazy" data-bs-toggle="modal" data-bs-target="#imageModal" onclick="setModalImage('{{ $image->path }}')">
+                @endforeach
+              </div>
+            @endif
             @empty
             <div>
               No reviews yet. Be the first to share your experience!
@@ -184,13 +194,13 @@
 
           </div>
         </div>
-        {{-- <div class="fixed-bottom mb-4 me-4" style="z-index: 1000; bottom: 20px; right: 20px;">
+        <div class="fixed-bottom mb-4 me-4" style="z-index: 1000; bottom: 20px; right: 20px;">
           <div class="position-absolute bottom-0 end-0">
-            <a class="btn btn-muted rounded" id="backToTopBtn" href="#details" style="display: none;">
+            <a class="btn btn-muted rounded-circle p-2" id="backToTopBtn" href="#details" style="display: none;">
               <i class="ri-arrow-up-line"></i>
             </a>
           </div>
-        </div> --}}
+        </div>
       </section>
       </div>
     </div>
@@ -286,7 +296,26 @@
   </div>
 </div>
 
+<!-- Image Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content bg-dark">
+      <div class="modal-header border-0">
+        <h5 class="modal-title" id="imageModalLabel"></h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body d-flex align-items-center justify-content-center p-0">
+        <img id="modalImage" src="" alt="Full Screen Image" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
+  function setModalImage(src) {
+    document.getElementById('modalImage').src = src;
+  }
+  
   window.venue = @json($venue);
   window.bookingDetails = @json($bookingDetails);
 </script>

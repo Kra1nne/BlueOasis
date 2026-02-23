@@ -21,7 +21,6 @@ use App\Http\Controllers\facilities\FacilitiesController;
 use App\Http\Controllers\reservation\ReservationController;
 use App\Http\Controllers\authentications\ForgotPasswordBasic;
 use App\Http\Controllers\report\ReportControllers;
-use App\Http\Controllers\evaluation\EvaluationControllers;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\email\EmailsController;
 
@@ -117,16 +116,12 @@ Route::middleware(['auth', 'role:Admin,Employee', 'throttle:web'])->group(functi
 
     Route::get('/logs', [UserController::class, 'logs'])->name('user-logs');
     
-
-    Route::get('/evaluation', [EvaluationControllers::class, 'display'])->name('evaluate-display');
   });
 
   Route::get('/pages/account-settings-account', [AccountSettingsAccount::class, 'index'])->name('pages-account-settings-account');
 });
 
 Route::get('/logout', [LoginBasic::class, 'logoutAccount'])->name('logout-process')->middleware(['throttle:web']);
-Route::get('/evaluation/question', [EvaluationControllers::class, 'index'])->name('evaluate');
-Route::post('/evaluation/question/add', [EvaluationControllers::class, 'store'])->name('evaluate-store');
 
 
 Route::get('/pages/misc-error', [MiscError::class, 'index'])->name('pages-misc-error');

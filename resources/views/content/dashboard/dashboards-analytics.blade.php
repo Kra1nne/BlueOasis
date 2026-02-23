@@ -151,47 +151,6 @@
     </div>
   </div>
 
-  <!-- Monthly Payment Line Chart with Year Filter -->
-  <div class="col-12">
-    <div class="card">
-      <div class="card-header d-flex justify-content-between align-items-center">
-        <h4 class="mb-0">Payment</h4>
-        <form method="GET">
-          <div class="d-flex align-items-center">
-            <select name="year" id="year" class="form-select" onchange="this.form.submit()">
-              @foreach ($availableYears as $year)
-                <option value="{{ $year }}" {{ $year == $selectedYear ? 'selected' : '' }}>{{ $year }}</option>
-              @endforeach
-            </select>
-          </div>
-        </form>
-      </div>
-      <div class="card-body">
-        <div id="totalProfitLineChart" style="height: 400px;"></div>
-        <span id="monthly-data" style="display:none;">{{ json_encode($monthlyData) }}</span>
-      </div>
-    </div>
-  </div>
-   <div class="col-12">
-    <div class="card">
-      <div class="card-header d-flex justify-content-between align-items-center">
-        <h4 class="mb-0">Partial Payment</h4>
-        <form method="GET">
-          <div class="d-flex align-items-center">
-            <select name="year" id="year" class="form-select" onchange="this.form.submit()">
-              @foreach ($availableYears as $year)
-                <option value="{{ $year }}" {{ $year == $selectedYear ? 'selected' : '' }}>{{ $year }}</option>
-              @endforeach
-            </select>
-          </div>
-        </form>
-      </div>
-      <div class="card-body">
-        <div id="totalProfitLineChartPartial" style="height: 400px;"></div>
-        <span id="monthly-partial-data" style="display:none;">{{ json_encode($monthlyPartialData) }}</span>
-      </div>
-    </div>
-  </div>
   <!-- facilities -->
   <div class="col-12">
     <div class="card">
@@ -243,13 +202,52 @@
         <h4 class="mb-0">Customer Satisfaction Score</h4>
       </div>
       <div class="card-body">
-        <div id="customerSatisfactionGauge" style="height: 335px;"></div>
-        <span id="satisfaction-score" style="display:none;">{{ $customerSatisfaction ?? 0 }}</span>
+        <div id="customerSatisfactionGauge" style="height: 345px;"></div>
+        <span id="rating-counts-data" style="display:none;">{{ json_encode($ratingCounts ?? []) }}</span>        
       </div>
     </div>
   </div>
 
+  
+
+
   <div class="col-12 col-lg-6">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="mb-0">Revenue Reservation</h4>
+      </div>
+      <div class="card-body text-center">
+        <h2 class="fw-semibold text-success mb-2">
+          ₱{{ number_format($averageRevenue, 2) }}
+        </h2>
+        <p class="text-muted mb-3">Average per booking</p>
+        <div id="avgRevenueSparkline" style="height: 250px;"></div>
+
+        <!-- Hidden data for trend -->
+        <span id="avg-revenue-data" style="display:none;">
+          {{ json_encode($monthlyRevenue) }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  
+
+
+  <div class="col-12 col-lg-8">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="mb-0">Cancellations</h4>
+      </div>
+      <div class="card-body">
+        <div id="refundsChart" style="height: 300px;"></div>
+        <span id="refunds-data" style="display:none;">
+          {{ json_encode($refundsData) }}
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-lg-4">
     <div class="card">
       <div class="card-header d-flex justify-content-between align-items-center">
         <h4 class="mb-0">Revenue by Category</h4>
@@ -264,7 +262,7 @@
       </form>
       </div>
       <div class="card-body">
-        <div id="revenueByCategoryChart" style="height: 335px;"></div>
+        <div id="revenueByCategoryChart" style="height: 305px;"></div>
 
         <!-- Hidden JSON data -->
         <span id="revenue-category-data" style="display:none;">
@@ -272,42 +270,6 @@
             'Cottages' => $cottageData,
             'Rooms' => $roomData
           ]) }}
-        </span>
-      </div>
-    </div>
-  </div>
-
-
-  <div class="col-12 col-lg-4">
-    <div class="card h-100">
-      <div class="card-header">
-        <h4 class="mb-0">Average Revenue per Reservation</h4>
-      </div>
-      <div class="card-body text-center">
-        <h2 class="fw-semibold text-success mb-2">
-          ₱{{ number_format($averageRevenue, 2) }}
-        </h2>
-        <p class="text-muted mb-3">Average per booking</p>
-        <div id="avgRevenueSparkline" style="height: 120px;"></div>
-
-        <!-- Hidden data for trend -->
-        <span id="avg-revenue-data" style="display:none;">
-          {{ json_encode($monthlyRevenue) }}
-        </span>
-      </div>
-    </div>
-  </div>
-
-
-  <div class="col-12 col-lg-8">
-    <div class="card">
-      <div class="card-header">
-        <h4 class="mb-0">Cancellations</h4>
-      </div>
-      <div class="card-body">
-        <div id="refundsChart" style="height: 300px;"></div>
-        <span id="refunds-data" style="display:none;">
-          {{ json_encode($refundsData) }}
         </span>
       </div>
     </div>
@@ -352,6 +314,54 @@
               <h6>{{ $foodBest->name}}</h3>
               <span>Total Sales of ₱{{ number_format($foodBest->total, 2)}}</span>
             </div>
+        </div>
+    </div>
+    <div class="col-xl-6 col-md-12">
+      <div class="card">
+        <div class="table-responsive text-nowrap overflow-auto" style="max-height: 500px;">
+            <table class="table table-hover">
+              <thead class="position-sticky top-0 bg-body">
+                <tr>
+                  <th>Name</th>
+                  <th>Book Count</th>
+                  <th>Sales</th>
+                </tr>
+              </thead>
+              <tbody class="table-border-bottom-0">
+                @foreach($CountOfBookings as $item)
+                <tr>
+                  <td>{{ $item->name }}</td>
+                  <td>{{ $item->total_bookings }}</td>
+                  <td>₱{{ number_format($item->total_sales, 2) }}</td>
+                </tr>
+                @endforeach
+              </tbody>
+            </table>
+          </div>
+        </div>
+    </div>
+    <div class="col-xl-6 col-md-12">
+      <div class="card">
+        <div class="table-responsive text-nowrap overflow-auto" style="max-height: 500px;">
+            <table class="table table-hover">
+              <thead class="position-sticky top-0 bg-body">
+                <tr>
+                  <th>Name</th>
+                  <th>Order Count</th>
+                  <th>Sales</th>
+                </tr>
+              </thead>
+              <tbody class="table-border-bottom-0">
+                @foreach($CountOfFoodBookings as $item)
+                <tr>
+                  <td>{{ $item->name }}</td>
+                  <td>{{ $item->total_orders }}</td>
+                  <td>₱{{ number_format($item->total_sales, 2) }}</td>
+                </tr>
+                @endforeach
+              </tbody>
+            </table>
+          </div>
         </div>
     </div>
 </div>

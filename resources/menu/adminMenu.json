@@ -46,12 +46,6 @@
       "slug": "feedback-list"
     },
     {
-      "url": "/logs",
-      "name": "Activity Logs",
-      "icon": "menu-icon tf-icons ri-file-list-3-line",
-      "slug": "user-logs"
-    },
-    {
       "url": "/user",
       "name": "Manage Accounts",
       "icon": "menu-icon tf-icons ri-user-shared-2-line",
@@ -62,6 +56,15 @@
       "name": "Generate Report",
       "icon": "menu-icon tf-icons ri-file-line",
       "slug": "reports-page"
+    },
+    {
+      "menuHeader": "Others"
+    },
+    {
+      "url": "/logs",
+      "name": "Activity Logs",
+      "icon": "menu-icon tf-icons ri-file-list-3-line",
+      "slug": "user-logs"
     }
   ]
 }

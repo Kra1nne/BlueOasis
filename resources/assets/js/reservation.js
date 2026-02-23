@@ -113,6 +113,7 @@ $(document).ready(function () {
           data-end="${reservation.check_out}"
           data-price="${reservation.promos_price ?? reservation.facilities_price}"
           data-category="${reservation.category}"
+          data-additional_price_time="${reservation.additional_price_time}"
           >
             <i class="ri-time-line me-1"></i> Extend Time
           </a>
@@ -391,6 +392,7 @@ $(document).ready(function () {
         const end = $(this).data('end');
         const price = $(this).data('price');
         const category = $(this).data('category');
+        const additional_price_time = $(this).data('additional_price_time');
         
         $('#id').val(id);
         $('#name').val(name);
@@ -440,7 +442,7 @@ $(document).ready(function () {
 
                 if (hour >= 22 || hour < 5) {
                     Toastify({
-                        text: 'Cottage extensions are not allowed from 10:00 PM to 4:59 AM due to curfew.',
+                        text: 'Cottage extensions are not allowed from 10:00 PM to 7:59 AM due to curfew.',
                         duration: 3000,
                         close: true,
                         gravity: 'top',
@@ -452,7 +454,7 @@ $(document).ready(function () {
                 }
 
                 const hours = calculateHours(normalizeDate(end), normalizeDate(extendTime));
-                const amount = hours * 100; 
+                const amount = hours * additional_price_time; // change into the actual additional time
                 $('#additional').val(amount);
             }
 

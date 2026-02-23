@@ -92,24 +92,38 @@
             </div>
           </div>
           <div class="row">
-            <div class="col mb-3 mt-2">
+            <div class="col-12 col-md-6 mb-2 mt-2">
               <div class="form-floating form-floating-outline">
                 <input type="number" id="price" name="price" class="form-control" placeholder="Enter Price">
                 <label for="Price">Price</label>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 mb-2 mt-2">
+              <div class="form-floating form-floating-outline">
+                <input type="number" id="addprice_perhour" name="addprice_perhour" class="form-control" placeholder="Enter Price">
+                <label for="Price">Additional Price (hour)</label>
               </div>
             </div>
           </div>
           <div class="row">
             <div class="col-12 col-md-6 mb-2 mt-2">
               <div class="form-floating form-floating-outline">
-                <input type="number" id="max_person" name="max_person" class="form-control" placeholder="Enter Price">
-                <label for="Max_Person">Maximum Person</label>
+                <input type="number" id="max_person" name="max_person" class="form-control" placeholder="Enter the number of pax">
+                <label for="Max_Person">Number of Pax</label>
               </div>
             </div>
             <div class="col-12 col-md-6 mb-2 mt-2">
               <div class="form-floating form-floating-outline">
                 <input type="number" id="additional_price" name="additional_price" class="form-control" placeholder="Enter addtional price">
-                <label for="Additional_Price">Additional Price</label>
+                <label for="Additional_Price">Additional Price (person)</label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col mb-3 mt-2">
+              <div class="form-floating form-floating-outline">
+                <input type="text" id="limit_add" name="limit_add" class="form-control" placeholder="Enter the number allowed for additional person">
+                <label for="limit_add">Additional Person</label>
               </div>
             </div>
           </div>
@@ -183,25 +197,39 @@
               </div>
             </div>
           </div>
-          <div class="row">
-            <div class="col mb-3 mt-2">
+           <div class="row">
+            <div class="col-12 col-md-6 mb-2 mt-2">
               <div class="form-floating form-floating-outline">
                 <input type="number" id="Edit_price" name="price" class="form-control" placeholder="Enter Price">
                 <label for="Price">Price</label>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 mb-2 mt-2">
+              <div class="form-floating form-floating-outline">
+                <input type="number" id="Edit_addprice_perhour" name="addprice_perhour" class="form-control" placeholder="Enter Price">
+                <label for="Price">Additional Price (hour)</label>
               </div>
             </div>
           </div>
           <div class="row">
             <div class="col-12 col-md-6 mb-3 mt-2">
               <div class="form-floating form-floating-outline">
-                <input type="number" id="Edit_maxPerson" name="max_person" class="form-control" placeholder="Enter Price">
-                <label for="Max_Person">Maximum Person</label>
+                <input type="number" id="Edit_maxPerson" name="max_person" class="form-control" placeholder="Enter the number of pax">
+                <label for="Max_Person">Number of Pax</label>
               </div>
             </div>
             <div class="col-12 col-md-6 mb-3 mt-2">
               <div class="form-floating form-floating-outline">
                 <input type="number" id="Edit_additionalPrice" name="additional_price" class="form-control" placeholder="Enter addtional price">
                 <label for="Additional_Price">Additional Price</label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col mb-3 mt-2">
+              <div class="form-floating form-floating-outline">
+                <input type="text" id="Edit_limit_add" name="limit_add" class="form-control" placeholder="Enter the number allowed for additional person">
+                <label for="limit_add">Additional Person</label>
               </div>
             </div>
           </div>
@@ -291,6 +319,8 @@
       'max_person' => $venue->max_person,
       'additional_price' => $venue->additional_price,
       'amenities' => $venue->amenities,
+      'additional_price_time' => $venue->additional_price_time,
+      'limit_add' => $venue->limit_add
     ];
   })->values()->toArray();
 @endphp

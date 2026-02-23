@@ -24,6 +24,11 @@ class LandingPageController extends Controller
             [
                 'title' => 'Attic Room',
                 'description' => 'Experience the beauty of the ocean from your private suite with a balcony and modern furnishings',
+                'aminities' => [
+                    'Pool Access',
+                    'Ocean View',
+                    'Private Balcony'
+                ],
                 'images' => [
                     asset('assets/img/elements/Room1-1.jpg'),
                     asset('assets/img/elements/Room2.jpg')
@@ -32,6 +37,15 @@ class LandingPageController extends Controller
             [
                 'title' => 'Moynihan House',
                 'description' => 'A spacious room with stunning views, and a peaceful atmosphere.',
+                 'aminities' => [
+                    'Pool Access',
+                    'Air-Conditioned',
+                    'Private Bathroom',
+                    'Kitchen',
+                    'Refrigirator',
+                    'Ocean View',
+                    'Private Balcony'
+                ],
                 'images' => [
                     asset('assets/img/elements/Room2-1.jpg'),
                     asset('assets/img/elements/Room1.jpg'),
@@ -42,6 +56,12 @@ class LandingPageController extends Controller
             [
                 'title' => 'Family Inn',
                 'description' => 'A spacious room with stunning views of the pool and sea, perfect for families seeking comfort and relaxation.',
+                 'aminities' => [
+                    'Pool Access',
+                    'Air-Conditioned',
+                    'Ocean View',
+                    'Private Balcony'
+                ],
                 'images' => [
                     asset('assets/img/elements/Room3-1.jpg'),
                     asset('assets/img/elements/Room3.jpg')

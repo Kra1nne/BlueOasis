@@ -185,6 +185,13 @@
           <div class="card-body">
             <h5 class="card-title">{{ $room['title'] }}</h5>
             <p class="card-text text-muted">{{ $room['description'] }}</p>
+            <div>
+              @foreach ($room['aminities'] as $amenity)
+                <span class="badge bg-primary me-1 mb-1">{{ $amenity }}</span>
+              @endforeach
+            </div>
+          </div>
+          <div class="card-footer text-center bg-white border-0">
             <a href="{{ route('booking') }}" class="text-primary fw-semibold text-decoration-none">Book Now</a>
           </div>
         </div>
