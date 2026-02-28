@@ -245,7 +245,6 @@ class PaymentController extends Controller
         $checkIn = $data['check_in'];
         $checkOut = $data['check_out'];
 
-        // Keep the FIRST time only
         if (substr_count($checkIn, 'T') > 1) {
             $parts = explode('T', $checkIn);
             $checkIn = $parts[0] . 'T' . $parts[1];

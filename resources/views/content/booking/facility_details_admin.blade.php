@@ -82,6 +82,16 @@
           </div>
         </div>
         </div>
+         <div class="mt-4 px-2">
+          <ul>
+                <li>These facilities have a capacity limit of {{  $venue->max_person }} people{{ $venue->limit_add > 0 ? " and can accommodate up to $venue->limit_add additional persons." : " and do not allow any additional persons beyond that limit."}}</li>
+            @foreach ($venue->promo as $item)
+                <li>
+                  The promo {{ $item->name }} have a capacity limit of {{ $item->max_person }} and do not allow any additional persons beyond that limit.
+                </li>
+            @endforeach
+          </ul>
+          </div>
         <div class="row justify-content-between mt-5">
           <div class="col-md-6 col-lg-6 mb-4 d-flex align-items-stretch">
             <div id="calendar" style="width: 100%; height: 500px;"></div>
@@ -99,13 +109,13 @@
                       @if ($venue->category == "room")
                            <div class="col mb-4">
                             <div class="form-floating form-floating-outline">
-                              <input class="form-control" type="datetime-local" id="checkin-date"  />
+                              <input class="form-control" type="date" id="checkin-date"  />
                               <label for="checkin-date">CHECK-IN</label>
                             </div>
                           </div>
                           <div class="col mb-4">
                             <div class="form-floating form-floating-outline">
-                              <input class="form-control" type="datetime-local" id="checkout-date"  />
+                              <input class="form-control" type="date" id="checkout-date"  />
                               <label for="checkout-date">CHECK-OUT</label>
                             </div>
                           </div>
@@ -185,13 +195,6 @@
 
           </div>
         </div>
-        {{-- <div class="fixed-bottom mb-4 me-4" style="z-index: 1000; bottom: 20px; right: 20px;">
-          <div class="position-absolute bottom-0 end-0">
-            <a class="btn btn-muted rounded" id="backToTopBtn" href="#details" style="display: none;">
-              <i class="ri-arrow-up-line"></i>
-            </a>
-          </div>
-        </div> --}}
       </section>
       </div>
     </div>
@@ -265,36 +268,6 @@
               <span id="total_amount" class="text-primary fw-bold"></span>
             </h5>
           </div>
-
-          <!-- Payment Methods -->
-          {{-- <div class="mb-3">
-            <h6>Payment Method</h6>
-            <div class="list-group">
-              <label class="list-group-item d-flex justify-content-between align-items-center">
-                <div>
-                  <input type="radio" name="payment" value="card" class="form-check-input me-2">
-                  Card (Visa / MasterCard / Amex)
-                </div>
-                <img src="https://img.icons8.com/color/48/000000/visa.png" height="24">
-              </label>
-
-              <label class="list-group-item d-flex justify-content-between align-items-center">
-                <div>
-                  <input type="radio" name="payment" value="paypal" class="form-check-input me-2">
-                  PayPal
-                </div>
-                <img src="https://img.icons8.com/color/48/000000/paypal.png" height="24">
-              </label>
-
-              <label class="list-group-item d-flex justify-content-between align-items-center">
-                <div>
-                  <input type="radio" name="payment" value="gcash" class="form-check-input me-2">
-                  GCash
-                </div>
-                <img src="{{ asset('assets/img/brands/gcash.png') }}" height="24">
-              </label>
-            </div>
-          </div> --}}
           <div class="modal-footer">
             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
             <button type="submit" class="btn btn-primary" id="SaveOrder">Confirm Booking</button>

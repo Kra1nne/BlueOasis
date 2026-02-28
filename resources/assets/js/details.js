@@ -368,8 +368,16 @@ $(document).ready(function () {
 
       $('#BookingDetailsModal').modal('show');
       $('#facility-name_details').text(facilitydetails.name);
-      $('#time-in_details').text(checkinDate + ' 2:00 PM');
-      $('#time-out_details').text(checkoutDate + ' 12:00 PM');
+
+      if(facilitydetails.category === "cottage"){
+        $('#time-in_details').text(checkinDate);
+        $('#time-out_details').text(checkoutDate);
+      }
+      else{
+        $('#time-in_details').text(checkinDate + ' 2:00 PM');
+        $('#time-out_details').text(checkoutDate + ' 12:00 PM');
+      }
+
       $('#promo_details').text(selectedPromo ? selectedPromo.name : 'No Promo');
       $('#price_details').text(formatPrice($('#venue_price').val()));
       $('#number_of_days').text(facilitydetails.category === 'cottage' ? '1' : calculateDays(checkin, checkout));
@@ -392,8 +400,16 @@ $(document).ready(function () {
       $('#facility_id').val(facilitydetails.id);
       $('#facility_name').val(facilitydetails.name);
       $('#facility_price').val($('#venue_price').val());
-      $('#facility_checkin').val(checkinDate + 'T14:00');
-      $('#facility_checkout').val(checkoutDate + 'T12:00');
+
+      if(facilitydetails.category === "cottage"){
+        $('#facility_checkin').val(checkinDate);
+        $('#facility_checkout').val(checkoutDate);
+      }
+      else{
+        $('#facility_checkin').val(checkinDate + 'T14:00');
+        $('#facility_checkout').val(checkoutDate + 'T12:00');
+      }
+
       $('#facility_number_of_guests').val($('#guest').val());
       $('#facility_promo_id').val($('#promo_id').val() || '');
       $('#facility_total_amount').val(total);

@@ -81,7 +81,14 @@
           </div>
         </div>
          <div class="mt-4 px-2">
-            <p>These facilities have a capacity limit of {{  $venue->max_person }} people{{ $venue->limit_Add > 0 ? " and can accommodate up to '$venue->limit_Add' additional persons beyond that limit." : " and do not allow any additional persons beyond that limit."}}</p>
+          <ul>
+              <li>These facilities have a capacity limit of {{  $venue->max_person }} people{{ $venue->limit_add > 0 ? " and can accommodate up to '$venue->limit_add' additional persons." : " and do not allow any additional persons beyond that limit."}}</li>
+            @foreach ($venue->promo as $item)
+                <li>
+                  The promo {{ $item->name }} have a capacity limit of {{ $item->max_person }} and do not allow any additional persons beyond that limit.
+                </li>
+            @endforeach
+          </ul>
           </div>
         </div>
         <div class="row justify-content-between mt-5">

@@ -207,7 +207,6 @@ class FacilitiesController extends Controller
                   'time_out' => $data->check_in 
               ];
         });
-        
         return view('content.booking.facility_details_admin', compact('venue', 'ratings','bookingDetails'));
   }
   public function viewFoods(Request $request){
