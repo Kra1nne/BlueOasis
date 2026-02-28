@@ -221,7 +221,7 @@
             <div class="col-12 col-md-6 mb-3 mt-2">
               <div class="form-floating form-floating-outline">
                 <input type="number" id="Edit_additionalPrice" name="additional_price" class="form-control" placeholder="Enter addtional price">
-                <label for="Additional_Price">Additional Price</label>
+                <label for="Additional_Price">Additional Price (person)</label>
               </div>
             </div>
           </div>

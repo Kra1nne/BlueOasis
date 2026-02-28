@@ -104,6 +104,8 @@ Route::middleware(['auth', 'role:Admin,Employee', 'throttle:web'])->group(functi
   Route::post('/reservations/add_food/process', [ReservationController::class, 'AddFoodProcess'])->name('reservation-add-food-process');
 
   Route::post('/reservations/guest', [ReservationController::class, 'AddGuest'])->name('reservation-add-guest');
+  Route::post('/reservations/pool', [ReservationController::class, 'PoolManagement'])->name('reservation-add-guest-pool');
+  
 
   Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar-list');
   Route::middleware(['role:Admin'])->group(function () {

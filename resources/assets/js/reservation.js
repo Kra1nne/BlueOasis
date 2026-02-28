@@ -89,7 +89,7 @@ $(document).ready(function () {
     reservations.forEach(reservation => {
       const fullname = reservation.name ?? reservation.firstname ?? ' ' + (reservation.middlename ?? ' ') + reservation.lastname ?? ' ';
       const Options = `
-        ${reservation.status != 'Fully Paid' && new Date(reservation.check_in) <= new Date() ? `
+        ${reservation.status != 'Fully Paid' && reservation.status != 'Cancel'  && new Date(reservation.check_in) <= new Date() ? `
           <a class="dropdown-item DoneBtn" href="javascript:void(0);"
           data-id="${reservation.id}"
           data-payment_id="${reservation.payment_id}"
@@ -122,8 +122,18 @@ $(document).ready(function () {
             href="javascript:void(0);"  data-bs-toggle="modal" data-bs-target="#GuestModal"
           >
           <i class="ri-user-line me-1"></i> Add Guest
-          </a>
         ` : ''}
+      `;
+      const Pool = `
+      ${new Date(reservation.check_out) > new Date() && reservation.category != "room" && reservation.payment_status != "Cancel" ? `
+        </a>
+          <a class="dropdown-item AddPool"
+          data-numberofguest="${reservation.guest}"
+          data-id="${reservation.encrypted_id}"
+          data-guestpool="${reservation.guest_pool}"
+          href="javascript:void(0);"  data-bs-toggle="modal" data-bs-target="#PoolModal" >
+          <i class="ri-umbrella-line"></i> Pool
+          </a>`: ''}
       `;
       
       const reservationRow = `
@@ -142,6 +152,9 @@ $(document).ready(function () {
           </td>
           <td>
             ${formatDate(new Date(reservation.check_in))} - ${formatDate(new Date(reservation.check_out))}
+          </td>
+          <td>
+          ${reservation.guest}
           </td>
           <td>
             <span class="badge rounded-pill 
@@ -212,6 +225,7 @@ $(document).ready(function () {
                 </a>
                 ${Options}
                 ${Add}
+                ${Pool}
           </td>
         </tr>
       `;
@@ -236,6 +250,134 @@ $(document).ready(function () {
   displayPromos(window.reservations);
 });
 
+$(document).ready(function () {
+
+    const price1 = 70; // 4-10 yrs
+    const price2 = 100; // 11+
+
+    let remainingGuests = 0;
+    let count1 = 0;
+    let count2 = 0;
+
+    function updateUI() {
+        $('#numberofguest').text(remainingGuests);
+        $('#count1').text(count1);
+        $('#count2').text(count2);
+
+        let total1 = count1 * price1;
+        let total2 = count2 * price2;
+        let grandTotal = total1 + total2;
+
+        $('#total1').text(total1);
+        $('#total2').text(total2);
+        $('#grandtotal').text(grandTotal);
+
+        $('#adult').val(count1);
+        $('#children').val(count2);
+        $('#totalamountpool').val(grandTotal);
+    }
+
+    // Open modal
+    $('body').on('click', '.AddPool', function () {
+        const id = $(this).data('id');
+        const guest_pool = $(this).data('guestpool')
+        remainingGuests = parseInt($(this).data('numberofguest')) - guest_pool;
+        count1 = 0;
+        count2 = 0;
+
+        updateUI();
+        $('#PoolModal').modal('show');
+        $('#reservationid').val(id);
+    });
+
+    // Add 4-10 yrs
+    $('#adding1').click(function () {
+        if (remainingGuests <= 0) {
+            showToast();
+            return;
+        }
+        count1++;
+        remainingGuests--;
+        updateUI();
+    });
+
+    // Remove 4-10 yrs
+    $('#remove1').click(function () {
+        if (count1 > 0) {
+            count1--;
+            remainingGuests++;
+            updateUI();
+        }
+    });
+
+    // Add 11+
+    $('#adding2').click(function () {
+        if (remainingGuests <= 0) {
+            showToast();
+            return;
+        }
+        count2++;
+        remainingGuests--;
+        updateUI();
+    });
+
+    // Remove 11+
+    $('#remove2').click(function () {
+        if (count2 > 0) {
+            count2--;
+            remainingGuests++;
+            updateUI();
+        }
+    });
+
+    function showToast() {
+        Toastify({
+            text: 'All guests are already added to the pool.',
+            duration: 3000,
+            close: true,
+            gravity: 'top',
+            position: 'right',
+            backgroundColor: '#cc3300'
+        }).showToast();
+    }
+
+});
+
+$(document).ready(function() {
+  $('body').on('click', '#SubmitPoolData', function() {
+    $.ajax({
+      type: 'Post',
+      url: '/reservations/pool',
+      cache: false,
+      data: $('#poolData').serialize(),
+      beforeSend: function () {
+        $('#PoolModal').modal('hide');
+        $('.preloader').show();
+      },
+      success: function (data) {
+        $('.preloader').hide();
+        if (data.Error == 1) {
+          Swal.fire('Error!', data.Message, 'error');
+        } else if (data.Error == 0) {
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Saved!',
+            text: data.Message,
+            showConfirmButton: true,
+            confirmButtonText: 'OK'
+          }).then(result => {
+            location.reload();
+          });
+        }
+      },
+      error: function () {
+        $('.preloader').hide();
+        Swal.fire('Error!', 'Something went wrong, please try again.', 'error');
+      }
+    })
+  })
+})
 
 $(document).ready(function () {
   $('body').on('click', '.ViewBtn', function () {
@@ -380,6 +522,23 @@ function normalizeDate(dateStr) {
     }
     return dateStr;
 }
+function calculateExtendedHours(endTimeStr, extendTimeStr) {
+    // Convert strings to Date objects
+    const end = new Date(endTimeStr.replace(" ", "T"));
+    const extendTime = new Date(extendTimeStr.replace(" ", "T"));
+
+    // If extended time is earlier than end, assume next day
+    if (extendTime < end) {
+        extendTime.setDate(extendTime.getDate() + 1);
+    }
+
+    // Calculate difference in hours
+    const diffMs = extendTime - end;
+    const hours = diffMs / (1000 * 60 * 60);
+
+    // Round up to nearest hour
+    return Math.ceil(hours);
+}
 
 $(document).ready(function () {
     $('body').on('click', '.AddBtn', function(){
@@ -418,22 +577,17 @@ $(document).ready(function () {
                 return Number.isInteger(num) && num > 0;
             }
             if (category === "room") {
-
                 const days = calculateDays(normalizeDate(end), normalizeDate(extendTime));
-                if(!isPositiveWholeNumber(days)){
-                  Toastify({
-                    text: 'The minimum extension is full day.',
-                    duration: 3000,
-                    close: true,
-                    gravity: 'top',
-                    position: 'right',
-                    backgroundColor: '#cc3300',
-                    stopOnFocus: true
-                  }).showToast();
-                  return;
+                
+                if(days >= 1){
+                  const amount = price * days;
+                  $('#additional').val(amount);
+                }else{
+                  const hours = calculateExtendedHours(end, extendTime);
+                  const totalamount = hours * additional_price_time;
+                  $('#additional').val(totalamount);
                 }
-                const amount = price * days;
-                $('#additional').val(amount);
+                
             }
 
             else if (category === "cottage") {
@@ -557,7 +711,7 @@ $(document).ready(function() {
             });
           }
         },
-        error: function () {
+        error: function (data) {
           $('.preloader').hide();
           Swal.fire('Error!', 'Something went wrong, please try again.', 'error');
         }

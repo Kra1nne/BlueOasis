@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\FoodBooking;
 use Illuminate\Database\Eloquent\Model;
 
 class Booking extends Model
@@ -26,7 +25,8 @@ class Booking extends Model
     'updated_at',
     'guest',
     'facility_income',
-    'name'
+    'name',
+    'guest_pool'
   ];
 
   public function foods()

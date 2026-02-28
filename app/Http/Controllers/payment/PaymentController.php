@@ -90,7 +90,7 @@ class PaymentController extends Controller
                                 "quantity" => 1
                             ]
                         ],
-                        "payment_method_types" => ["qrph"],
+                        "payment_method_types" => ["gcash"],
                         "send_email_receipt" => false,
                         "show_description" => true,
                         "show_line_items" => true,
@@ -190,7 +190,7 @@ class PaymentController extends Controller
                                 "quantity" => 1
                             ]
                         ],
-                        "payment_method_types" => ["qrph"],
+                        "payment_method_types" => ["gcash"],
                         "send_email_receipt" => false,
                         "show_description" => true,
                         "show_line_items" => true,
@@ -242,12 +242,26 @@ class PaymentController extends Controller
             $paymentStatus = 'Fully Paid';
         }
 
+        $checkIn = $data['check_in'];
+        $checkOut = $data['check_out'];
+
+        // Keep the FIRST time only
+        if (substr_count($checkIn, 'T') > 1) {
+            $parts = explode('T', $checkIn);
+            $checkIn = $parts[0] . 'T' . $parts[1];
+        }
+
+        if (substr_count($checkOut, 'T') > 1) {
+            $parts = explode('T', $checkOut);
+            $checkOut = $parts[0] . 'T' . $parts[1];
+        }
+
         $booking = [
             'reserve' => 1,
             'walk_in' => 0,
             'status' => $paymentStatus,
-            'check_in' => $data['check_in'],
-            'check_out' => $data['check_out'],
+            'check_in' => $checkIn,
+            'check_out' => $checkOut,
             'created_at' => now(),
             'users_id' => Auth::id(),
             'promos_id' => $data['promo_id'] ?? null,

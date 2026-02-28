@@ -25,6 +25,7 @@
           <th>Amount</th>
           <th>Payment</th>
           <th>Schedule</th>
+          <th>Guest</th>
           <th>Reservation Status</th>
           <th>Payment Status</th>
           <th>Action</th>
@@ -218,6 +219,109 @@
           </div>
         </form>
       </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="PoolModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content shadow-lg rounded-4">
+      
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold w-100 text-center">Swimming Pool Access</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body px-4">
+
+        <!-- Remaining Guests -->
+        <div class="text-center mb-4">
+          <span class="fw-semibold">Remaining Guests:</span>
+          <span id="numberofguest" class="fw-bold text-primary fs-5">0</span>
+        </div>
+
+        <div class="row g-4">
+          
+          <!-- Guest Selection -->
+          <div class="col-md-6">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+              <div class="card-body">
+
+                <h6 class="fw-bold mb-4">Select Guests</h6>
+
+                <!-- Kids -->
+                <div class="row d-flex justify-content-between align-items-center mb-3">
+                  <div class="col">
+                   <div class="fw-semibold fs-6 fs-md-5">4–10 yrs old</div>
+                   <small class="text-muted fs-6 fs-md-6">₱70 per guest</small>
+                  </div>
+                  <div class="col">
+                    <button class="btn btn-outline-danger btn-sm" id="remove1">−</button>
+                    <span class="mx-1 fw-light" id="count1">0</span>
+                    <button class="btn btn-primary btn-sm" id="adding1">+</button>
+                  </div>
+                </div>
+
+                <!-- Adults -->
+                <div class="row d-flex justify-content-between align-items-center">
+                  <div class="col">
+                    <div class="fw-semibold fs-6 fs-md-5">11 yrs old & above</div>
+                    <small class="text-muted fs-6 fs-md-6">₱100 per guest</small>
+                  </div>
+                  <div class="col">
+                    <button class="btn btn-outline-danger btn-sm" id="remove2">−</button>
+                    <span class="mx-1 fw-light" id="count2">0</span>
+                    <button class="btn btn-primary btn-sm" id="adding2">+</button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- Payment Summary -->
+          <div class="col-md-6">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+              <div class="card-body">
+
+                <h6 class="fw-bold mb-4">Payment Summary</h6>
+
+                <div class="d-flex justify-content-between mb-2">
+                  <span>4–10 yrs old</span>
+                  <span>₱<span id="total1">0</span></span>
+                </div>
+
+                <div class="d-flex justify-content-between mb-3">
+                  <span>11 yrs old & above</span>
+                  <span>₱<span id="total2">0</span></span>
+                </div>
+
+                <hr>
+
+                <div class="d-flex justify-content-between fw-bold fs-5">
+                  <span>Total</span>
+                  <span class="text-primary">₱<span id="grandtotal">0</span></span>
+                </div>
+                <form id="poolData">
+                  @csrf
+                  <input type="hidden" id="reservationid" name="id">
+                  <input type="hidden" id="adult" name="adult">
+                  <input type="hidden" id="children" name="children">
+                  <input type="hidden" id="totalamountpool" name="totalamountpool">
+                </form>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-primary px-4" id="SubmitPoolData">
+          Confirm & Submit
+        </button>
+      </div>
+
     </div>
   </div>
 </div>

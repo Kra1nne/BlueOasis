@@ -80,6 +80,9 @@
             @endif
           </div>
         </div>
+         <div class="mt-4 px-2">
+            <p>These facilities have a capacity limit of {{  $venue->max_person }} people{{ $venue->limit_Add > 0 ? " and can accommodate up to '$venue->limit_Add' additional persons beyond that limit." : " and do not allow any additional persons beyond that limit."}}</p>
+          </div>
         </div>
         <div class="row justify-content-between mt-5">
           <div class="col-md-6 col-lg-6 mb-4 d-flex align-items-stretch">
@@ -98,13 +101,13 @@
                       @if ($venue->category == "room")
                            <div class="col mb-4">
                             <div class="form-floating form-floating-outline">
-                              <input class="form-control" type="datetime-local" id="checkin-date"  />
+                              <input class="form-control" type="date" id="checkin-date"  />
                               <label for="checkin-date">CHECK-IN</label>
                             </div>
                           </div>
                           <div class="col mb-4">
                             <div class="form-floating form-floating-outline">
-                              <input class="form-control" type="datetime-local" id="checkout-date"  />
+                              <input class="form-control" type="date" id="checkout-date"  />
                               <label for="checkout-date">CHECK-OUT</label>
                             </div>
                           </div>

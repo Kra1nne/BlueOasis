@@ -37,6 +37,8 @@ function validateForm(fields) {
 
 $(document).ready(function () {
   const facilitydetails = window.venue;
+  var promo_max = 0;
+  
   $('#venue_id').val(facilitydetails.id);
   $('#venue_name').val(facilitydetails.name);
   $('#venue_price').val(facilitydetails.price);
@@ -90,11 +92,12 @@ $(document).ready(function () {
     $(this).addClass('active bg-label-primary');
     $('.promo-btn').not('.active').addClass('bg-label-gray');
     $('#promo_id').val($(this).data('promo-id') || '');
-
+    promo_max = 0;
     const promoId = $(this).data('promo-id');
     selectedPromo = null;
     if (promoId) {
       selectedPromo = facilitydetails.promo.find(p => p.id == promoId);
+      promo_max = selectedPromo.max_person;
     }
     updatePriceDisplay();
   });
@@ -211,6 +214,36 @@ $(document).ready(function () {
 
     const checkin = $('#checkin-date').val();
     const checkout = $('#checkout-date').val();
+    const guest = $('#guest').val();
+
+    const maxGuestAllowed = facilitydetails.max_person + facilitydetails.limit_add;
+    
+    if(guest > maxGuestAllowed && promo_max == 0){
+      Toastify({
+        text: 'Please reduce occupants to the allowed limit.',
+        duration: 3000,
+        close: true,
+        gravity: 'top',
+        position: 'right',
+        backgroundColor: '#cc3300',
+        stopOnFocus: true
+      }).showToast();
+      return;
+    }
+
+    if(guest > promo_max && promo_max != 0){
+      Toastify({
+        text: 'Please reduce occupants to the allowed limit.',
+        duration: 3000,
+        close: true,
+        gravity: 'top',
+        position: 'right',
+        backgroundColor: '#cc3300',
+        stopOnFocus: true
+      }).showToast();
+      return;
+    }
+    
 
     let wholeDay = isFullDayBooking(checkin, checkout);
    
@@ -296,15 +329,19 @@ $(document).ready(function () {
         return inDate <= reservedEnd && outDate >= reservedStart;
       });
     }else{
-      function stripTime(date) {
-        return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      function setTimeFromDateInput(dateString, hours, minutes = 0) {
+        const d = new Date(dateString); // comes as 00:00
+        d.setHours(hours, minutes, 0, 0);
+        return d;
       }
 
       isConflict = window.bookingDetails.some(booking => {
-          const reservedStart = stripTime(new Date(booking.time_in));
-          const reservedEnd = stripTime(new Date(booking.time_out));
-          const inDate = stripTime(new Date(checkin));
-          const outDate = stripTime(new Date(checkout));
+
+          const reservedStart = new Date(booking.time_in);
+          const reservedEnd = new Date(booking.time_out);
+
+          const inDate = setTimeFromDateInput(checkin, 14);   // 2:00 PM
+          const outDate = setTimeFromDateInput(checkout, 12); // 12:00 PM
 
           return inDate < reservedEnd && outDate > reservedStart;
       });
@@ -326,10 +363,13 @@ $(document).ready(function () {
       }
 
     if (valid) {
+      var checkinDate = $('#checkin-date').val();
+      var checkoutDate = $('#checkout-date').val();
+
       $('#BookingDetailsModal').modal('show');
       $('#facility-name_details').text(facilitydetails.name);
-      $('#time-in_details').text($('#checkin-date').val());
-      $('#time-out_details').text($('#checkout-date').val());
+      $('#time-in_details').text(checkinDate + ' 2:00 PM');
+      $('#time-out_details').text(checkoutDate + ' 12:00 PM');
       $('#promo_details').text(selectedPromo ? selectedPromo.name : 'No Promo');
       $('#price_details').text(formatPrice($('#venue_price').val()));
       $('#number_of_days').text(facilitydetails.category === 'cottage' ? '1' : calculateDays(checkin, checkout));
@@ -347,12 +387,13 @@ $(document).ready(function () {
       $('#service-fee').text(formatPrice(serviceFee));
 
       // store to the input fields
+      
       $('#facility_category').val(facilitydetails.category);
       $('#facility_id').val(facilitydetails.id);
       $('#facility_name').val(facilitydetails.name);
       $('#facility_price').val($('#venue_price').val());
-      $('#facility_checkin').val($('#checkin-date').val());
-      $('#facility_checkout').val($('#checkout-date').val());
+      $('#facility_checkin').val(checkinDate + 'T14:00');
+      $('#facility_checkout').val(checkoutDate + 'T12:00');
       $('#facility_number_of_guests').val($('#guest').val());
       $('#facility_promo_id').val($('#promo_id').val() || '');
       $('#facility_total_amount').val(total);

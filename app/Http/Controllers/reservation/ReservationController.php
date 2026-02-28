@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers\reservation;
 
-use DateTime;
-use App\Models\Log;
-use App\Models\Food;
-use App\Models\Rating;
-use App\Models\Booking;
-use App\Models\Payment;
-use App\Models\Facility;
-use App\Models\FoodBooking;
-use App\Models\RatingImages;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Booking;
+use App\Models\Facility;
+use App\Models\Food;
+use App\Models\FoodBooking;
+use App\Models\Log;
+use App\Models\Payment;
+use App\Models\Pool;
+use App\Models\Rating;
+use App\Models\RatingImages;
+use Carbon\Carbon;
+use DateTime;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
@@ -49,12 +51,12 @@ class ReservationController extends Controller
                       ")
                     ->orderBy('bookings.created_at', 'DESC')
                     ->distinct('bookings.id')
-                    ->select('bookings.*', 'facilities.name as facilities_name', 'promos.name as promos_name', 'promos.price as promos_price', 'facilities.price as facilities_price','person.firstname', 'person.middlename', 'person.lastname', 'rating.rating as rate', 'payments.amount as payment_amount', 'payments.id as payment_id', 'facilities.category as category', 'payments.status as payment_status')
+                    ->select('bookings.*', 'facilities.name as facilities_name', 'promos.name as promos_name', 'promos.price as promos_price', 'facilities.price as facilities_price','person.firstname', 'person.middlename', 'person.lastname', 'rating.rating as rate', 'payments.amount as payment_amount', 'payments.id as payment_id', 'facilities.category as category', 'payments.status as payment_status', 'facilities.additional_price_time')
                     ->get()->map(function ($reservation) {
                           $reservation->encrypted_id = Crypt::encryptString($reservation->id);
                           return $reservation;
                       });
-                
+      
       return view('content.reservation.reservation-list', compact('reservations', 'facilities'));
     }
 
@@ -205,8 +207,15 @@ class ReservationController extends Controller
     }
     public function updateReservation(Request $request)
     {
+      $categoryData = $request->cat;
       $checkIn = $request->checkin;
       $checkOut = $request->checkout;
+      
+      if($categoryData === "room"){
+        $checkIn = Carbon::parse($request->checkin)->setTime(14, 0, 0);
+        $checkOut = Carbon::parse($request->checkout)->setTime(12, 0, 0);
+      }
+
       $bookings = Booking::whereNotIn('status', ['Cancel', 'Full Paid'])
             ->where('facilities_id', $request->facilityId)
             ->select('check_in', 'check_out')
@@ -407,6 +416,16 @@ class ReservationController extends Controller
                             ->select('promos.*', 'facilities.*', 'promos.max_person as promo_max')
                             ->first();
 
+      
+
+      $currentGuest = $booking->guest + $request->guest;
+      $maxGuest = $facilities->promo_max == null ? $facilities->max_person + $facilities->limit_add : $facilities->promo_max;
+     
+      if($currentGuest > $maxGuest){
+        return response()->json(['Error' => 1, 'Message' => 'Please reduce occupants to the allowed limit.']);
+      }
+
+
       $amount = $booking->amount;
       $Additional = 0;
       $over = 0;
@@ -460,6 +479,31 @@ class ReservationController extends Controller
 
       if($resultBooking){
         return response()->json(['Error' => 0, 'Message' => 'Successfully addedd a new guest.']);
+      }
+    }
+    public function PoolManagement(Request $request){
+      if(empty($request->totalamountpool)){
+        return response()->json(['Error' => 1, 'Message' => 'Guest added to the pool is empty.']);
+      }
+      $id = Crypt::decryptString($request->id);
+      $booking = Booking::where('id', $id)->first();
+
+      $bookingdata = [
+        'amount' => ($booking->amount + $request->totalamountpool),
+        'guest_pool' => $request->adult + $request->children
+      ];
+      $pooldata = [
+        'bookings_id' => $id,
+        'adult_count' => $request->adult,
+        'children_count' => $request->children,
+        'total_amount' => $request->totalamountpool,
+        'created_at' => now()
+      ];
+      $bookingresult = Booking::where('id', $id)->update($bookingdata);
+      $poolresult = Pool::insert($pooldata);
+
+      if($poolresult && $bookingresult){
+        return response()->json(['Error' => 0, 'Message' => 'Guest successfully added to the pool.']);
       }
     }
 }

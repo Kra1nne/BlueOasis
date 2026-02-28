@@ -201,12 +201,13 @@
             <div class="col">
               <input type="hidden" id="reservationID" name="id">
               <input type="hidden" id="facilityID" name="facilityId">
-              <input type="datetime-local" name="checkin" id="checkin" class="form-control">
+              <input type="hidden" id="cat" name="cat">
+              <input type="date" name="checkin" id="checkin" class="form-control">
             </div>
           </div>
           <div class="row mb-5">
             <div class="col">
-              <input type="datetime-local" name="checkout" id="checkout" class="form-control">
+              <input type="date" name="checkout" id="checkout" class="form-control">
             </div>
           </div>
         </form>

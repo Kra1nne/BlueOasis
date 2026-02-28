@@ -32,7 +32,7 @@ return [
   ],
   'paymongo' => [
       'secret' => env('PAYMONGO_SECRET_KEY'),
-      'key' => env('PAYMONGO_KEY'),
+      'key' => env('PAYMONGO_PUBLIC_KEY'),
   ],
   'google' => [
       'client_id' => env('GOOGLE_CLIENT_ID'),        

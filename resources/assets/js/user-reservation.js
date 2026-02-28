@@ -397,12 +397,24 @@ $(document).ready(function() {
     const end = $(this).data('checkout');
     const id = $(this).data('id');
     const facilities_id = $(this).data('facilities_id');
-
     facility_category = $(this).data('category');
 
     $('#reservationID').val(id);
     $('#facilityID').val(facilities_id);
+    $('#cat').val(facility_category);
     day = calculateDays(start, end);
+
+    if (facility_category === 'cottage') {
+        $('#checkin').attr('type', 'datetime-local');
+        $('#checkout').attr('type', 'datetime-local');
+    } else {
+        $('#checkin').attr('type', 'date');
+        $('#checkout').attr('type', 'date');
+    }
+
+    // Set values (make sure format matches input type)
+    $('#checkin').val(start);
+    $('#checkout').val(end);
   });
 
   $('body').on('click', '#UpdateBtn', function(envent) {
@@ -424,24 +436,30 @@ $(document).ready(function() {
  
     let valid = true;
 
-    if(facility_category == 'room'){
-      if(countDay != day){
-        Toastify({
-          text: 'Invalid input. The time and date duration is incorrect for the room.',
-          duration: 3000,
-          close: true,
-          gravity: 'top',
-          position: 'right',
-          backgroundColor: '#cc3300',
-          stopOnFocus: true
-        }).showToast();
-        return;
-      }
-    }
-
     if(facility_category == 'cottage'){
-      if(countDay != 0.20833333333333334 && countDay != 0.5 && countDay != 0.7083333333333334){
+      const checkinDate = new Date(checkin);
+      const checkoutDate = new Date(checkout);
 
+      // Extract time in HH:MM AM/PM format
+      const checkinTime = checkinDate.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
+
+      const checkoutTime = checkoutDate.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
+
+      // Allowed time ranges
+      const isValidTime =
+        (checkinTime === "08:00 AM" && checkoutTime === "05:00 PM") ||
+        (checkinTime === "05:00 PM" && checkoutTime === "10:00 PM") ||
+        (checkinTime === "08:00 AM" && checkoutTime === "10:00 PM");
+
+      if (!isValidTime) {
         Toastify({
           text: 'Invalid input. The time and date duration is incorrect for the cottage',
           duration: 3000,
