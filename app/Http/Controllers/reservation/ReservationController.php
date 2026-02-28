@@ -38,6 +38,7 @@ class ReservationController extends Controller
                     ->leftjoin('payments', 'payments.bookings_id', '=', 'bookings.id')
                     ->leftjoin('person', 'person.id', '=', 'users.person_id')
                     ->leftjoin('rating', 'rating.bookings_id', '=', 'bookings.id')
+                    ->leftjoin('pool', 'pool.bookings_id', '=', 'bookings.id')
                     ->leftJoin('promos', function($join) {
                         $join->on('promos.facilities_id', '=', 'facilities.id')
                             ->whereColumn('promos.id', 'bookings.promos_id');
@@ -51,7 +52,7 @@ class ReservationController extends Controller
                       ")
                     ->orderBy('bookings.created_at', 'DESC')
                     ->distinct('bookings.id')
-                    ->select('bookings.*', 'facilities.name as facilities_name', 'promos.name as promos_name', 'promos.price as promos_price', 'facilities.price as facilities_price','person.firstname', 'person.middlename', 'person.lastname', 'rating.rating as rate', 'payments.amount as payment_amount', 'payments.id as payment_id', 'facilities.category as category', 'payments.status as payment_status', 'facilities.additional_price_time')
+                    ->select('bookings.*', 'facilities.name as facilities_name', 'promos.name as promos_name', 'promos.price as promos_price', 'facilities.price as facilities_price','person.firstname', 'person.middlename', 'person.lastname', 'rating.rating as rate', 'payments.amount as payment_amount', 'payments.id as payment_id', 'facilities.category as category', 'payments.status as payment_status', 'facilities.additional_price_time', 'pool.adult_count', 'pool.children_count', 'pool.total_amount')
                     ->get()->map(function ($reservation) {
                           $reservation->encrypted_id = Crypt::encryptString($reservation->id);
                           return $reservation;
@@ -67,6 +68,7 @@ class ReservationController extends Controller
                     ->leftjoin('payments', 'payments.bookings_id', '=', 'bookings.id')
                     ->leftjoin('person', 'person.id', '=', 'users.person_id')
                     ->leftjoin('rating', 'rating.bookings_id', '=', 'bookings.id')
+                    ->leftjoin('pool', 'pool.bookings_id', '=', 'bookings.id')
                     ->leftJoin('promos', function($join) {
                         $join->on('promos.facilities_id', '=', 'facilities.id')
                             ->whereColumn('promos.id', 'bookings.promos_id');
@@ -81,7 +83,7 @@ class ReservationController extends Controller
                     ->orderBy('bookings.created_at', 'DESC')
                     ->where('users.id', '=', Auth::id())
                     ->distinct('bookings.id')
-                    ->select('bookings.*', 'facilities.name as facilities_name', 'promos.name as promos_name', 'promos.price as promos_price', 'facilities.price as facilities_price','person.firstname', 'person.middlename', 'person.lastname', 'rating.rating as rate', 'payments.amount as payment_amount', 'payments.id as payment_id', 'facilities.category as fac_category')
+                    ->select('bookings.*', 'facilities.name as facilities_name', 'promos.name as promos_name', 'promos.price as promos_price', 'facilities.price as facilities_price','person.firstname', 'person.middlename', 'person.lastname', 'rating.rating as rate', 'payments.amount as payment_amount', 'payments.id as payment_id', 'facilities.category as fac_category', 'pool.adult_count', 'pool.children_count', 'pool.total_amount')
                     ->get()->map(function ($reservation) {
                           $reservation->encrypted_id = Crypt::encryptString($reservation->id);
                           return $reservation;
@@ -487,10 +489,14 @@ class ReservationController extends Controller
       }
       $id = Crypt::decryptString($request->id);
       $booking = Booking::where('id', $id)->first();
+      $payment = Payment::where('bookings_id', $id)->first();
 
       $bookingdata = [
         'amount' => ($booking->amount + $request->totalamountpool),
         'guest_pool' => $request->adult + $request->children
+      ];
+      $paymentData = [
+        'amount' => ($payment->amount + $request->totalamountpool)
       ];
       $pooldata = [
         'bookings_id' => $id,
@@ -501,8 +507,9 @@ class ReservationController extends Controller
       ];
       $bookingresult = Booking::where('id', $id)->update($bookingdata);
       $poolresult = Pool::insert($pooldata);
+      $payment = Payment::where('id', $payment->id)->update($paymentData);
 
-      if($poolresult && $bookingresult){
+      if($poolresult && $bookingresult && $payment){
         return response()->json(['Error' => 0, 'Message' => 'Guest successfully added to the pool.']);
       }
     }

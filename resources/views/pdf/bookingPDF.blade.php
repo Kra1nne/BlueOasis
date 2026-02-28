@@ -80,11 +80,20 @@
 
     <div class="dashed"></div>
 
+    <div><h4 >Pool</h4></div>
+     @if ($Details['category'] === "room")
+        <div>
+          Free Pool
+        </div>
+     @else
+         <div class="details">
+            <div>4–10 yrs old: {{ $Details['children_count'] }} x 70 = {{ $Details['children_count'] * 70 }}</div>
+            <div>11 yrs old and above: {{ $Details['adult_count'] }} x 100 = {{ $Details['adult_count'] * 100 }}</div>
+          </div>
+     @endif
+    <div class="dashed"></div>
     <!-- Totals -->
-    <div class="line total">
-      <span>Service Fee</span>
-      <span style="margin-top: -14px">50.00</span>
-    </div>
+    
     <div class="line total">
       <span>TOTAL AMOUNT</span>
       <span style="margin-top: -14px">{{ number_format($Details['total_amount'], 2) }}</span>

@@ -101,8 +101,9 @@ class BookingController extends Controller
       
       $booking = Booking::leftjoin('facilities', 'bookings.facilities_id', '=', 'facilities.id')
         ->leftjoin('promos', 'bookings.promos_id', '=', 'promos.id')
+        ->leftjoin('pool', 'pool.bookings_id', '=', 'bookings.id')
         ->where('bookings.id', $bookingId)
-        ->select('bookings.*', 'facilities.name as facility_name', 'facilities.price as facility_price', 'promos.*')
+        ->select('bookings.*', 'facilities.name as facility_name', 'facilities.price as facility_price', 'promos.*', 'pool.adult_count', 'pool.children_count', 'facilities.category')
         ->first();
 
       $food = Food::leftjoin('food_bookings', 'foods.id', '=', 'food_bookings.foods_id')
@@ -120,6 +121,9 @@ class BookingController extends Controller
         'service_fee' => 0,
         'total_amount' => $booking->amount,
         'status' => $booking->status,
+        'category' => $booking->category,
+        'children_count' => $booking->children_count,
+        'adult_count' => $booking->adult_count
       ];
       $foodItems = [];
       foreach( $food as $item ){

@@ -103,6 +103,10 @@ $(document).ready(function () {
                       data-payment_amount="${reservation.payment_amount}"
                       data-status="${reservation.status}"
                       data-name="${reservation.name}"
+                      data-adult_count="${reservation.adult_count}"
+                      data-children_count="${reservation.children_count}"
+                      data-total_amount="${reservation.total_amount}"
+                      data-category="${reservation.fac_category}"
                       >
                       <i class="ri-eye-line me-1 text-primary"></i> View
                     </a>
@@ -158,7 +162,12 @@ $(document).ready(function () {
     const payment_amount = $(this).data('payment_amount');
     const status = $(this).data('status');
     const name = $(this).data('name');
-    
+    const adult_count = $(this).data('adult_count');
+    const children_count = $(this).data('children_count');
+    const category = $(this).data('category');
+
+    const adultTotal = adult_count * 70;
+    const childrenTotal = children_count * 100;
 
     $('#facility-customer').text(name ?? fullname);
     $('#facility-name_details').text(facility_name);
@@ -187,9 +196,17 @@ $(document).ready(function () {
     let footersHtml = '';
     footersHtml = `<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
                   <a href="/booking/pdf/${id}" target="_blank"  type="button" class="btn btn-primary" >Print PDF</a>`;
+
+     let poolHtml = category === 'cottage'? `
+            <div>4–10 yrs old: ${children_count ?? 0} x 70 = ${childrenTotal ?? 0}</div>
+            <div class="mt-3">11 yrs old and above: ${adult_count ?? 0} x 100 = ${adultTotal ?? 0}</div>
+            ` : `
+            <div class="text-start fw-bold">Free Pool</div>
+            `;
                   
     $('#foods_list').html(foodHtml);
     $('#footerBtn').html(footersHtml); 
+    $('#pool_list').html(poolHtml); 
   });
 });
 $(document).ready(function () {

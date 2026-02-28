@@ -117,7 +117,9 @@
 
             <div><h5 class="text-center">Foods</h5></div>
             <div id="foods_list" class="mt-3"></div>
-
+            
+            <div><h5 class="text-center">Pool</h5></div>
+            <div class="mb-1" id="pool_list"></div>
             <!-- Total -->
             <div class="border-top pt-2 mb-3">
               
