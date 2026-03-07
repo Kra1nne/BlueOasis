@@ -276,8 +276,8 @@ $(document).ready(function () {
         $('#total2').text(total2);
         $('#grandtotal').text(grandTotal);
 
-        $('#adult').val(count1);
-        $('#children').val(count2);
+        $('#children').val(count1);
+        $('#adult').val(count2);
         $('#totalamountpool').val(grandTotal);
     }
 
@@ -403,8 +403,8 @@ $(document).ready(function () {
     const children_count = $(this).data('children_count');
     const category = $(this).data('category');
 
-    const adultTotal = adult_count * 70;
-    const childrenTotal = children_count * 100;
+    const adultTotal = adult_count * 100;
+    const childrenTotal = children_count * 70;
 
     $('#facility-customer').text(name ?? fullname);
     $('#facility-name_details').text(facility_name);

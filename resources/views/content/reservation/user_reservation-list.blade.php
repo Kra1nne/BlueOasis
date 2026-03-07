@@ -101,7 +101,7 @@
             </div>
             <div class="row mb-2">
               <div class="col-12">
-                <strong>Mode of Payment: </strong> <span>Gcash</span>
+                <strong>Mode of Payment: </strong> <span>Qrph</span>
               </div>
             </div>
             <div class="row mb-2">

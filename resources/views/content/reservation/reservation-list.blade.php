@@ -102,7 +102,7 @@
             </div>
             <div class="row mb-2">
               <div class="col-12">
-                <strong>Mode of Payment: </strong> <span>Gcash</span>
+                <strong>Mode of Payment: </strong> <span>Qrph</span>
               </div>
             </div>
             <div class="row mb-2">
@@ -308,8 +308,8 @@
                 <form id="poolData">
                   @csrf
                   <input type="hidden" id="reservationid" name="id">
-                  <input type="hidden" id="adult" name="adult">
                   <input type="hidden" id="children" name="children">
+                  <input type="hidden" id="adult" name="adult">
                   <input type="hidden" id="totalamountpool" name="totalamountpool">
                 </form>
               </div>

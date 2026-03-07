@@ -90,7 +90,7 @@ class PaymentController extends Controller
                                 "quantity" => 1
                             ]
                         ],
-                        "payment_method_types" => ["gcash"],
+                        "payment_method_types" => ["qrph"],
                         "send_email_receipt" => false,
                         "show_description" => true,
                         "show_line_items" => true,
@@ -190,7 +190,7 @@ class PaymentController extends Controller
                                 "quantity" => 1
                             ]
                         ],
-                        "payment_method_types" => ["gcash"],
+                        "payment_method_types" => ["qrph"],
                         "send_email_receipt" => false,
                         "show_description" => true,
                         "show_line_items" => true,

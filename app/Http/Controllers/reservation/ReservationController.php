@@ -488,26 +488,44 @@ class ReservationController extends Controller
         return response()->json(['Error' => 1, 'Message' => 'Guest added to the pool is empty.']);
       }
       $id = Crypt::decryptString($request->id);
+
+      $poolchecking = Pool::where('bookings_id', $id)->first();
       $booking = Booking::where('id', $id)->first();
       $payment = Payment::where('bookings_id', $id)->first();
-
-      $bookingdata = [
-        'amount' => ($booking->amount + $request->totalamountpool),
-        'guest_pool' => $request->adult + $request->children
-      ];
+     
       $paymentData = [
         'amount' => ($payment->amount + $request->totalamountpool)
       ];
-      $pooldata = [
-        'bookings_id' => $id,
-        'adult_count' => $request->adult,
-        'children_count' => $request->children,
-        'total_amount' => $request->totalamountpool,
-        'created_at' => now()
-      ];
-      $bookingresult = Booking::where('id', $id)->update($bookingdata);
-      $poolresult = Pool::insert($pooldata);
       $payment = Payment::where('id', $payment->id)->update($paymentData);
+      
+      if($poolchecking){
+        $pooldata = [
+          'adult_count' => $request->adult + $poolchecking->adult_count,
+          'children_count' => $request->children + $poolchecking->children_count,
+          'total_amount' => $request->totalamountpool + $poolchecking->total_amount,
+        ];
+        $bookingdata = [
+          'amount' => ($booking->amount + $request->totalamountpool),
+          'guest_pool' => $request->adult + $request->children + $booking->guest_pool,
+        ];
+        $bookingresult = Booking::where('id', $id)->update($bookingdata);
+        $poolresult = Pool::where('id', $poolchecking->id)->update($pooldata);
+      }
+      else{
+        $pooldata = [
+          'bookings_id' => $id,
+          'adult_count' => $request->adult,
+          'children_count' => $request->children,
+          'total_amount' => $request->totalamountpool,
+          'created_at' => now()
+        ];
+        $bookingdata = [
+          'amount' => ($booking->amount + $request->totalamountpool),
+          'guest_pool' => $request->adult + $request->children
+        ];
+        $bookingresult = Booking::where('id', $id)->update($bookingdata);
+        $poolresult = Pool::insert($pooldata);
+      }
 
       if($poolresult && $bookingresult && $payment){
         return response()->json(['Error' => 0, 'Message' => 'Guest successfully added to the pool.']);
